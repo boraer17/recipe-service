@@ -1,4 +1,4 @@
-package com.rs.model;
+package com.rs.model.xml;
 
 import java.util.HashSet;
 import java.util.Set;

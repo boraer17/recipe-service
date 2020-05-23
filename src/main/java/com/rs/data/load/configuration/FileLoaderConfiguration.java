@@ -1,4 +1,4 @@
-package com.rs.data.load;
+package com.rs.data.load.configuration;
 
 import java.io.File;
 

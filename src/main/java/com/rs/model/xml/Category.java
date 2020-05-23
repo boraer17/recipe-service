@@ -1,4 +1,4 @@
-package com.rs.model;
+package com.rs.model.xml;
 
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;

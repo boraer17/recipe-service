@@ -36,12 +36,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
-			 <exclusions>
-            <exclusion>  <!-- declare the exclusion here -->
-                <groupId>org.jvnet.mimepull</groupId>
-                <artifactId>mimepull</artifactId>
-            </exclusion>
-        </exclusions>
 		</dependency>
 
 		<dependency>

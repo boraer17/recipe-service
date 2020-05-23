@@ -1,4 +1,4 @@
-package com.rs.data.load.deserializer;
+package com.rs.data.deserializer;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -27,13 +27,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.rs.data.DeserializerType;
 import com.rs.exception.DeserializationException;
-import com.rs.model.Head;
-import com.rs.model.Ingredient;
-import com.rs.model.IngredientDivision;
-import com.rs.model.Recipe;
-import com.rs.model.RecipeDivision;
-import com.rs.model.RecipeRaw;
-import com.rs.model.Step;
+import com.rs.model.xml.Head;
+import com.rs.model.xml.Ingredient;
+import com.rs.model.xml.IngredientDivision;
+import com.rs.model.xml.Recipe;
+import com.rs.model.xml.RecipeDivision;
+import com.rs.model.xml.RecipeML;
+import com.rs.model.xml.Step;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -83,7 +83,7 @@ public class CustomXmlDeserializer implements ICustomDeserializer {
 				return parseRecipeDivision(doc, xmlMapper);
 
 			} else {
-				final RecipeRaw recipeRaw = xmlMapper.readValue(content, RecipeRaw.class);
+				final RecipeML recipeRaw = xmlMapper.readValue(content, RecipeML.class);
 				final IngredientDivision ingredientdivs = new IngredientDivision("",
 						recipeRaw.getRecipe().getIngredients());
 				RecipeDivision recipeDivision = new RecipeDivision(recipeRaw.getRecipe().getHead(),

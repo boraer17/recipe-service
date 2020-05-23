@@ -1,4 +1,4 @@
-package com.rs.model;
+package com.rs.model.xml;
 
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
@@ -14,7 +14,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class RecipeRaw {
+public class RecipeML {
 
 	
 	@JacksonXmlProperty(isAttribute = true, localName = "version")

@@ -2,3 +2,7 @@
 app:
   listener:
     directory: C:\Users\ersel.bora\Downloads\interview-assessment-mendix-developer\Recipes\Upload
+spring:
+  redis:
+    host: 127.0.0.1
+    port: 6379

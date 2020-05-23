@@ -19,9 +19,9 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.rs.RecipeServiceApplication;
-import com.rs.data.load.deserializer.ICustomDeserializer;
-import com.rs.model.Recipe;
-import com.rs.model.RecipeDivision;
+import com.rs.data.deserializer.ICustomDeserializer;
+import com.rs.model.xml.Recipe;
+import com.rs.model.xml.RecipeDivision;
 
 import lombok.extern.slf4j.Slf4j;
 
