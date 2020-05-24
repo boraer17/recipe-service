@@ -62,7 +62,7 @@ public class CustomXmlDeserializer implements ICustomDeserializer {
 			t.setOutputProperty(OutputKeys.INDENT, "yes");
 			t.transform(new DOMSource(node), new StreamResult(sw));
 		} catch (TransformerException te) {
-			System.out.println("nodeToString Transformer Exception");
+			log.error("nodeToString Transformer Exception");
 		}
 		return sw.toString();
 	}
@@ -76,7 +76,6 @@ public class CustomXmlDeserializer implements ICustomDeserializer {
 			final Document doc = dBuilder.parse(targetStream);
 
 			doc.getDocumentElement().normalize();
-			log.info("Root element: " + doc.getDocumentElement().getNodeName());
 			final NodeList nIngDivList = doc.getElementsByTagName(IngredientDivision.TAG);
 
 			if (nIngDivList.getLength() != 0) {
@@ -92,7 +91,7 @@ public class CustomXmlDeserializer implements ICustomDeserializer {
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("Deserialization Exception "+e);
 			throw new DeserializationException(e.getMessage());
 		}
 	}
@@ -103,15 +102,10 @@ public class CustomXmlDeserializer implements ICustomDeserializer {
 		final NodeList nDirectionList = doc.getElementsByTagName(Recipe.DIRECTION_TAGS);
 		final NodeList nIngDivList = doc.getElementsByTagName(IngredientDivision.TAG);
 		Node nNode = nHeadList.item(0);
-
-		log.info("Current Element: " + nNode.getNodeName());
-
 		final String sHead = nodeToString(nNode);
 		Head head = xmlMapper.readValue(sHead, Head.class);
 
 		nNode = nDirectionList.item(0);
-		log.info("Current Element: " + nNode.getNodeName());
-
 		final String sDirection = nodeToString(nNode);
 		Step step = xmlMapper.readValue(sDirection, Step.class);
 
@@ -120,7 +114,6 @@ public class CustomXmlDeserializer implements ICustomDeserializer {
 			nNode = nIngDivList.item(i);
 			IngredientDivision ingredientDivision = new IngredientDivision();
 			Set<Ingredient> ingredients = new HashSet<Ingredient>();
-			log.info("Current Element: " + nNode.getNodeName());
 			NodeList childs = nNode.getChildNodes();
 			for (int j = 0; j < childs.getLength(); j++) {
 				Node nChild = childs.item(j);
@@ -138,7 +131,6 @@ public class CustomXmlDeserializer implements ICustomDeserializer {
 			ingSet.add(ingredientDivision);
 		}
 		return new RecipeDivision(head, ingSet, Collections.singleton(step));
-
 	}
 
 }

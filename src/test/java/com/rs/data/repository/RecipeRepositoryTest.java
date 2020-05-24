@@ -2,6 +2,7 @@ package com.rs.data.repository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -54,6 +55,8 @@ public class RecipeRepositoryTest {
 		final Recipe recipe = generateRecipe();
 		final Recipe recipeCreated = recipeRepo.save(recipe);
 		assertNotNull(recipeCreated.getId());
+		final Boolean result = recipeRepo.deleteById(recipeCreated.getId());
+		assertTrue(result);
 	}
 
 	@Test
@@ -65,7 +68,7 @@ public class RecipeRepositoryTest {
 		Pageable page = PageRequest.of(0, 20);
 		Page pageResult =  recipeRepo.findAll(page);
 		pageResult.getContent().forEach(System.out::println);
-		assertEquals(20,pageResult.getSize());
+		assertEquals(20,pageResult.getContent().size());
 
 	}
 	

@@ -9,11 +9,14 @@ public interface IRecipeRepository  {
    
 	Recipe save(final Recipe recipe);
 	
-    Recipe update(final Recipe recipe);
+	Recipe update(Recipe recipe, Double score);
     
-    void deleteById(final String id);
+    Boolean deleteById(final String id);
     
     Page findAll(Pageable page);
 
-    
+    Recipe findById(String id);
+
+	Double findScore(String id);
+
 }

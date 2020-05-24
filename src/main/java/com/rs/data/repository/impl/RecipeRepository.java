@@ -18,6 +18,7 @@ import org.springframework.stereotype.Repository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rs.data.repository.IRecipeRepository;
 import com.rs.exception.DeserializationException;
+import com.rs.exception.DocumentNotFoundException;
 import com.rs.exception.DocumentOperationException;
 import com.rs.model.dto.Recipe;
 import com.rs.util.Util;
@@ -56,37 +57,62 @@ public class RecipeRepository implements IRecipeRepository {
 	public Recipe save(final Recipe recipe) {
 		final String id = Util.generateUuid();
 		recipe.setId(id);
-		boolean success = client.addDocument(generateDoc.apply(documentDeserializer.apply(recipe)), new AddOptions());
-		if (success) {
+		if (client.addDocument(generateDoc.apply(documentDeserializer.apply(recipe)), new AddOptions()))
 			return recipe;
-		} else {
+		else {
 			log.error("Recipe({}) could not be added to data store", recipe.toString());
 			throw new DocumentOperationException("Recipe(%s) could not be added to data store", recipe.toString());
 		}
 	}
 
 	@Override
-	public Recipe update(final Recipe recipe) {
-		// TODO Auto-generated method stub
-		return null;
+	public Recipe update(final Recipe recipe, Double score) {
+
+		if (client.updateDocument(recipe.getId(), score, documentDeserializer.apply(recipe)))
+			return recipe;
+		else
+			throw new DocumentOperationException("Recipe(%s) Update Failed", recipe.getId());
+
 	}
 
 	@Override
-	public void deleteById(String id) {
-		// TODO Auto-generated method stub
-
+	public Boolean deleteById(String id) {
+		if (!client.deleteDocument(id, true)) {
+			log.error("Recipe({}) could not be removed from data store", id);
+			throw new DocumentOperationException("Recipe(%s) could not be removed from data store", id);
+		}
+		return true;
 	}
 
 	@Override
 	public Page findAll(Pageable page) {
 
-		Query q = new Query("*").limit(page.getPageNumber(), page.getPageSize());
+		Query q = new Query("*")  .limit(page.getPageNumber(), page.getPageSize());
 		SearchResult result = client.search(q);
 		return new PageImpl<Recipe>(result.docs.parallelStream().map(documentSerializer).collect(Collectors.toList()),
 				page, result.totalResults);
 
 	}
 
+	@Override
+	public Double findScore(String id) {
+		final Document doc = client.getDocument(id);
+		if(doc != null)
+			return doc.getScore();
+		else
+			throw new DocumentNotFoundException("Recipe('%s') Not Found",id);
+	}
+	
+	@Override
+	public Recipe findById(String id) {
+		final Document doc = client.getDocument(id);
+		if(doc != null)
+			return documentSerializer.apply(doc);
+		else
+			throw new DocumentNotFoundException("Recipe('%s') Not Found",id);
+	}
+	
+	
 	private boolean checkRecipeClientConnection() {
 		boolean flag = true;
 		try {
@@ -115,7 +141,7 @@ public class RecipeRepository implements IRecipeRepository {
 				{
 					put(TITLE, recipe.getHead().getTitle());
 					put(ID, recipe.getId());
-					put(CATEGORY, recipe.getHead().getCategories());
+					put(CATEGORY, recipe.getHead().getCategory());
 					put(YIELD, recipe.getHead().getYield());
 					put(BODY, objMapper.writeValueAsString(recipe));
 				}
@@ -154,5 +180,6 @@ public class RecipeRepository implements IRecipeRepository {
 			throw new DeserializationException("Document Serialize Error " + ex);
 		}
 	};
+
 
 }
