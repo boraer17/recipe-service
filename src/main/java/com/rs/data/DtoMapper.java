@@ -1,6 +1,7 @@
 package com.rs.data;
 
 import java.util.Iterator;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -26,7 +27,9 @@ public class DtoMapper {
 	Function<com.rs.model.xml.Head, com.rs.model.dto.Head> headMapper = xmlHead -> {
 
 		final com.rs.model.dto.Head head = new com.rs.model.dto.Head(xmlHead.getTitle(), xmlHead.getYield(),
-				xmlHead.getCategories().stream().map(catMapper).collect(Collectors.toSet()));
+				xmlHead.getCategories().stream().map(catMapper).map(cat -> {
+					return cat.getDefinition();
+				}).collect(Collectors.joining(",")));
 		return head;
 	};
 
@@ -49,7 +52,7 @@ public class DtoMapper {
 			com.rs.model.xml.Step xmlStep = (com.rs.model.xml.Step) it.next();
 			direction.getSteps().add(new Step(order, xmlStep.getStep()));
 			order++;
-			
+
 		}
 		return direction;
 	};
@@ -62,14 +65,13 @@ public class DtoMapper {
 
 	Function<RecipeDivision, Recipe> mapper = recipeDivision -> {
 
-		final Recipe recipe = new Recipe(
-				headMapper.apply(recipeDivision.getHead()), directionMapper.apply(recipeDivision),
-						recipeDivision.getIngredientdivs().stream().map(formulaMapper).collect(Collectors.toSet()));
+		final Recipe recipe = new Recipe("",headMapper.apply(recipeDivision.getHead()),
+				directionMapper.apply(recipeDivision),
+				recipeDivision.getIngredientdivs().stream().map(formulaMapper).collect(Collectors.toSet()));
 		return recipe;
 
 	};
 
-	
 	public Recipe mapObject(RecipeDivision recipeDiv) {
 		return mapper.apply(recipeDiv);
 	}

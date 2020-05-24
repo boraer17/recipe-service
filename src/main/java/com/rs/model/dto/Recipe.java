@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.validation.constraints.NotNull;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,11 +15,14 @@ import lombok.ToString;
 @ToString
 public class Recipe {
 
-    @NotNull
+	
+	private String id;
+
+	@NotNull
 	private Head head;
-    
-    @NotNull
+
+	@NotNull
 	private Direction direction;
-    @NotNull
+	@NotNull
 	private Set<Formula> formulas = new HashSet<Formula>();
 }

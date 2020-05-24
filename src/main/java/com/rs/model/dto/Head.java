@@ -1,8 +1,5 @@
 package com.rs.model.dto;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -29,6 +26,6 @@ public class Head {
 	
 	@NotNull
 	@NotEmpty
-	private Set<Category> categories = new HashSet<Category>();
+	private String categories;
 	
 }
