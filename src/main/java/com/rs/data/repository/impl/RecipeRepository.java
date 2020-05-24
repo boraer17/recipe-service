@@ -3,11 +3,16 @@ package com.rs.data.repository.impl;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,6 +25,7 @@ import com.rs.util.Util;
 import io.redisearch.Document;
 import io.redisearch.Query;
 import io.redisearch.Schema;
+import io.redisearch.SearchResult;
 import io.redisearch.client.AddOptions;
 import io.redisearch.client.Client;
 import lombok.extern.slf4j.Slf4j;
@@ -35,33 +41,30 @@ public class RecipeRepository implements IRecipeRepository {
 	private static final String YIELD = "yield";
 	private static final String BODY = "body";
 
+	
 	private static final Schema RECIPE_SCHEMA = new Schema().addTextField(ID, 1.0)
 			.addField(new Schema.TextField(TITLE, 5.0, true, false, false)).addTagField(CATEGORY, ",")
 			.addSortableNumericField(YIELD).addTextField("body", 1.0);
-
+	
+	@Autowired
+	@Qualifier(value = "recipeClient")
 	private Client client;
 
 	private static ObjectMapper objMapper = Util.getMapper();
-
-	@Autowired
-	public RecipeRepository(@Qualifier(value = "recipeClient") Client client) {
-		super();
-		this.client = client;
-	}
 
 	@Override
 	public Recipe save(final Recipe recipe) {
 		final String id = Util.generateUuid();
 		recipe.setId(id);
-		boolean success = client.addDocument(generateDoc(documentDeserializer(recipe)), new AddOptions());
+		boolean success = client.addDocument(generateDoc.apply(documentDeserializer.apply(recipe)), new AddOptions());
 		if (success) {
 			return recipe;
 		} else {
+			log.error("Recipe({}) could not be added to data store", recipe.toString());
 			throw new DocumentOperationException("Recipe(%s) could not be added to data store", recipe.toString());
 		}
 	}
 
-	
 	@Override
 	public Recipe update(final Recipe recipe) {
 		// TODO Auto-generated method stub
@@ -74,10 +77,20 @@ public class RecipeRepository implements IRecipeRepository {
 
 	}
 
+	@Override
+	public Page findAll(Pageable page) {
+
+		Query q = new Query("*").limit(page.getPageNumber(), page.getPageSize());
+		SearchResult result = client.search(q);
+		return new PageImpl<Recipe>(result.docs.parallelStream().map(documentSerializer).collect(Collectors.toList()),
+				page, result.totalResults);
+
+	}
+
 	private boolean checkRecipeClientConnection() {
 		boolean flag = true;
 		try {
-			client.getInfo();
+			Map<String, Object> info = client.getInfo();
 		} catch (JedisConnectionException je) {
 			log.error(je.getMessage());
 			flag = false;
@@ -87,11 +100,16 @@ public class RecipeRepository implements IRecipeRepository {
 
 	@PostConstruct
 	private boolean createSchema() {
-		client.dropIndex();
+
+		try {
+			client.dropIndex();
+		} catch (Exception ex) {
+			log.error(ex.getMessage());
+		}
 		return client.createIndex(RECIPE_SCHEMA, io.redisearch.client.Client.IndexOptions.defaultOptions());
 	}
 
-	private Map<String, Object> documentDeserializer(Recipe recipe) {
+	Function<Recipe, Map<String, Object>> documentDeserializer = recipe -> {
 		try {
 			Map<String, Object> doc = Collections.unmodifiableMap(new HashMap<String, Object>() {
 				{
@@ -104,15 +122,37 @@ public class RecipeRepository implements IRecipeRepository {
 			});
 			return doc;
 		} catch (Exception ex) {
+			log.error("Document Deserialize Error " + ex);
 			throw new DeserializationException("Document Deserialize Error " + ex);
 		}
 
-	}
+	};
 
-	private Document generateDoc(Map<String, Object> map) {
+	Function<Map<String, Object>, Document> generateDoc = map -> {
 		return new Document((String) map.get(ID), map);
-	}
+	};
 
-	
+	Function<Document, Recipe> documentSerializer = document -> {
+		try {
+			final String raw = document.getString(BODY);
+			final Recipe recipe = objMapper.readValue(raw, Recipe.class);
+			return recipe;
+		} catch (Exception ex) {
+			log.error("Document Serialize Error " + ex);
+			throw new DeserializationException("Document Serialize Error " + ex);
+		}
+
+	};
+
+	Function<Map<String, Object>, Recipe> resultSerializer = map -> {
+		try {
+			final String raw = (String) map.get(BODY);
+			final Recipe recipe = objMapper.readValue(raw, Recipe.class);
+			return recipe;
+		} catch (Exception ex) {
+			log.error("Document Serialize Error " + ex);
+			throw new DeserializationException("Document Serialize Error " + ex);
+		}
+	};
 
 }

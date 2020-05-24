@@ -1,8 +1,8 @@
 package com.rs.data.repository;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -12,6 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -52,10 +56,26 @@ public class RecipeRepositoryTest {
 		assertNotNull(recipeCreated.getId());
 	}
 
+	@Test
+	public void testFindAll() throws Exception {
+		for(int i=0;i<100;i++) {
+			final Recipe recipe = generateRecipe();
+		    recipeRepo.save(recipe);
+		}
+		Pageable page = PageRequest.of(0, 20);
+		Page pageResult =  recipeRepo.findAll(page);
+		pageResult.getContent().forEach(System.out::println);
+		assertEquals(20,pageResult.getSize());
+
+	}
+	
 	private Recipe generateRecipe() throws Exception {
 		String xml = new String(Files.readAllBytes(Paths.get(directory + "/" + fileName)));
 		RecipeDivision recipeDiv = deserializer.deserialize(xml);
 		return mapper.mapObject(recipeDiv);
 	}
+	
+	
+	
 
 }

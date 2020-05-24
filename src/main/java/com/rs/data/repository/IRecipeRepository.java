@@ -1,5 +1,8 @@
 package com.rs.data.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.rs.model.dto.Recipe;
 
 public interface IRecipeRepository  {
@@ -10,5 +13,7 @@ public interface IRecipeRepository  {
     
     void deleteById(final String id);
     
+    Page findAll(Pageable page);
+
     
 }
