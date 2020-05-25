@@ -19,4 +19,7 @@ public interface IRecipeRepository  {
 
 	Double findScore(String id);
 
+    Page search(Pageable page,String query);
+	
+	
 }

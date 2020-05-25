@@ -14,5 +14,7 @@ public interface IRecipeService {
 	
 	Recipe update(final Recipe recipe);
 	
-	Page<Recipe> searchRecipe(Pageable page,String keyword);
+	Page<Recipe> searchRecipe(Pageable page,String query,String filter);
+	
+	Recipe findById(String id);
 }

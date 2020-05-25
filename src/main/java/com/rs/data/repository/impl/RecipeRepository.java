@@ -86,14 +86,14 @@ public class RecipeRepository implements IRecipeRepository {
 
 	@Override
 	public Page findAll(Pageable page) {
-
-		Query q = new Query("*")  .limit(page.getPageNumber(), page.getPageSize());
-		SearchResult result = client.search(q);
-		return new PageImpl<Recipe>(result.docs.parallelStream().map(documentSerializer).collect(Collectors.toList()),
-				page, result.totalResults);
-
+		return query(page, "*");
 	}
 
+	@Override
+	public Page search(Pageable page, String query) {
+		return query(page, query);
+	}
+	
 	@Override
 	public Double findScore(String id) {
 		final Document doc = client.getDocument(id);
@@ -112,6 +112,13 @@ public class RecipeRepository implements IRecipeRepository {
 			throw new DocumentNotFoundException("Recipe('%s') Not Found",id);
 	}
 	
+	
+	private Page query(Pageable page, String query) {
+		Query q = new Query(query).limit(page.getPageNumber(), page.getPageSize());
+		SearchResult result = client.search(q);
+		return new PageImpl<Recipe>(result.docs.parallelStream().map(documentSerializer).collect(Collectors.toList()),
+				page, result.totalResults);
+	}
 	
 	private boolean checkRecipeClientConnection() {
 		boolean flag = true;
@@ -180,6 +187,5 @@ public class RecipeRepository implements IRecipeRepository {
 			throw new DeserializationException("Document Serialize Error " + ex);
 		}
 	};
-
 
 }

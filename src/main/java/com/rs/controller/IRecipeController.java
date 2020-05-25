@@ -31,7 +31,7 @@ public interface IRecipeController {
 	Recipe getRecipe(@PathVariable("recipeId") String recipeId);
 
 	@GetMapping
-	Page<Recipe> searchRecipe(@RequestParam(required = false, name = "keyword") final String keyword,
+	Page<Recipe> searchRecipe(@RequestParam(required = false, name = "keyword") final String keyword,@RequestParam(required = false, name = "filter") final String filter,
 			@PageableDefault(page = 0, size = 20) @SortDefault.SortDefaults({
 					@SortDefault(sort = "name", direction = Direction.DESC) }) Pageable pageable);
 	

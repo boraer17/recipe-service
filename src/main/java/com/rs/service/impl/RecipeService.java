@@ -38,9 +38,14 @@ public class RecipeService implements IRecipeService{
 	}
 
 	@Override
-	public Page<Recipe> searchRecipe(Pageable page, String keyword) {
-		// TODO Auto-generated method stub
+	public Page<Recipe> searchRecipe(Pageable page, String keyword,String filter) {
+		
 		return null;
+	}
+
+	@Override
+	public Recipe findById(String id) {
+		return recipeRepository.findById(id);
 	}
 
 

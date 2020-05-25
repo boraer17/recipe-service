@@ -5,6 +5,8 @@ import java.util.Set;
 
 import javax.validation.constraints.NotNull;
 
+import org.springframework.data.annotation.Id;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.rs.util.Util;
 
@@ -18,7 +20,7 @@ import lombok.ToString;
 @Data
 public class Recipe {
 
-	
+	@Id
 	private String id;
 
 	@NotNull
