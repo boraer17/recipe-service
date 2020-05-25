@@ -25,7 +25,7 @@ public class RecipeController implements IRecipeController {
 
 	@Override
 	public ResponseEntity<Recipe> createRecipe(@Valid Recipe recipe) {
-		return new ResponseEntity<Recipe>(recipeService.update(recipe),HttpStatus.CREATED);
+		return new ResponseEntity<Recipe>(recipeService.save(recipe),HttpStatus.CREATED);
 	}
 
 	@Override
@@ -41,8 +41,7 @@ public class RecipeController implements IRecipeController {
 
 	@Override
 	public Page<Recipe> searchRecipe(String keyword, String filter, Pageable pageable) {
-		
-		return null;
+		return recipeService.searchRecipe(pageable, keyword, filter);
 	}
 
 }

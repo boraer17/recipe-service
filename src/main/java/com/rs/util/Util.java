@@ -1,5 +1,6 @@
 package com.rs.util;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,5 +24,7 @@ public class Util {
 		return mapper;
 	}
 
-
+	public static String[] parseString(final String splitRegex, String s) {
+		return Arrays.stream(s.split(splitRegex)).map(String::trim).toArray(String[]::new);
+	}
 }
