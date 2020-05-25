@@ -1,6 +1,8 @@
 package com.rs.service.impl;
 
-import java.util.Arrays;
+import java.util.Collection;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -9,11 +11,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.rs.data.repository.IRecipeRepository;
+import com.rs.exception.DocumentOperationException;
 import com.rs.model.dto.Category;
 import com.rs.model.dto.Recipe;
+import com.rs.service.ICategoryService;
 import com.rs.service.IRecipeService;
 import com.rs.util.Util;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class RecipeService implements IRecipeService{
 
@@ -23,13 +30,17 @@ public class RecipeService implements IRecipeService{
 	
 	private IRecipeRepository recipeRepository;
 	
+	private ICategoryService categoryService;
+	
 	@Autowired
-	public RecipeService(IRecipeRepository recipeRepository) {
+	public RecipeService(IRecipeRepository recipeRepository,ICategoryService categoryService) {
 		this.recipeRepository = recipeRepository;
+		this.categoryService = categoryService;
 	}
 
 	@Override
 	public Recipe save(Recipe recipe) {
+		checkCategoryAddIfMissing(recipe.getHead().getCategories());
 		return recipeRepository.save(recipe);
 	}
 
@@ -84,5 +95,23 @@ public class RecipeService implements IRecipeService{
 
 	private static String generateSearchQuery(final String searchField,final String keyword) {
 		return "@" + searchField + ":" + keyword;
+	}
+	
+	
+	private void checkCategoryAddIfMissing(Collection<Category> categories) {
+		try {
+			String[] categoryIds = categories.stream().map(cat -> {
+				return cat.getCategory();
+			}).toArray(String[]::new);
+			Set<Category> cateSet = categoryService.findByIds(categoryIds);
+			categories.removeAll(cateSet);
+			if (0 < categories.size()) {
+				for (Category cat : categories) {
+					categoryService.save(cat);
+				}
+			}
+		} catch (DocumentOperationException doe) {
+			log.error(doe.getMessage());
+		}
 	}
 }

@@ -1,0 +1,104 @@
+{
+	"info": {
+		"_postman_id": "911f168c-9095-4a11-b384-40bd514e4f77",
+		"name": "Recipe Api Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create Recipe",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\n    \"head\": {\n        \"title\": \"Bitterbollen\",\n        \"yield\": 1,\n        \"categories\": [\n            {\n                \"category\": \"Dutch\"\n            }\n        ]\n    },\n    \"direction\": {\n        \"steps\": [\n            {\n                \"order\": 1,\n                \"explianation\": \"Put prepared bitterbollens to owen for 15 min\"\n            }\n        ]\n    },\n    \"formulas\": [\n        {\n            \"title\": null,\n            \"ingredients\": [\n                {\n                    \"item\": \"meat\",\n                    \"amount\": {\n                        \"qty\": \"1\",\n                        \"unit\": \"kilo\"\n                    }\n                }\n            ]\n        }\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/recipes",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"recipes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Recipes",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/recipes",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"recipes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Filter Recipes",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/recipes",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"recipes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Search Keyword Recipes",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/recipes",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"recipes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Categories",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/categories",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"categories"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

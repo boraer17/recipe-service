@@ -26,6 +26,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import com.rs.controller.impl.RecipeController;
 import com.rs.model.dto.Amount;
+import com.rs.model.dto.Category;
 import com.rs.model.dto.Direction;
 import com.rs.model.dto.Formula;
 import com.rs.model.dto.Head;
@@ -56,6 +57,7 @@ public class RecipeControllerTest {
 	@Test
 	public void recipeSaveTest() throws Exception {
 		Recipe recipe = createRecipe();
+		System.out.println(recipe.toString());
 		when(recipeService.save(recipe)).thenReturn(recipe);
 		mvc.perform(post("/recipes").content(recipe.toString()).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isCreated());
@@ -82,7 +84,11 @@ public class RecipeControllerTest {
 	
 	private static Recipe createRecipe() {
 		Recipe recipe = new Recipe();
-		recipe.setHead(new Head("Bitterbollen", 1, "Dutch"));
+		recipe.setHead(new Head("Bitterbollen", 1, new HashSet<Category>() {
+			{
+				add(new Category("Dutch"));
+			}
+		}));
 		recipe.setDirection(new Direction(new HashSet<Step>() {
 			{
 				add(new Step(1, "Put prepared bitterbollens to owen for 15 min"));

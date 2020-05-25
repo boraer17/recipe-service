@@ -143,12 +143,13 @@ public class RecipeRepository implements IRecipeRepository {
 	}
 
 	Function<Recipe, Map<String, Object>> documentDeserializer = recipe -> {
+		
 		try {
 			Map<String, Object> doc = Collections.unmodifiableMap(new HashMap<String, Object>() {
-				{
+				{ 
 					put(TITLE, recipe.getHead().getTitle());
 					put(ID, recipe.getId());
-					put(CATEGORY, recipe.getHead().getCategory());
+					put(CATEGORY, recipe.getHead().getCategories().stream().map(cat->{return cat.getCategory();}).collect(Collectors.joining(",")));
 					put(YIELD, recipe.getHead().getYield());
 					put(BODY, objMapper.writeValueAsString(recipe));
 				}

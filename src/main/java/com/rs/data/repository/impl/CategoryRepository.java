@@ -2,7 +2,9 @@ package com.rs.data.repository.impl;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -74,13 +76,13 @@ public class CategoryRepository implements ICategoryRepository {
 	
 	
 	@Override
-	public Category findById(String description) {
-		final Document doc = client.getDocument(description);
-		if (doc != null) {
-			return documentSerializer.apply(doc);
-		} else {
-			throw new DocumentNotFoundException("Category Not Found for Category(%s)", description);
-		}
+	public Set<Category> findByIds(String... category) {
+		final List<Document> docs = client.getDocuments(category);
+		if (docs.get(0) != null)
+			return docs.stream().map(documentSerializer).collect(Collectors.toSet());
+		else
+			return Collections.emptySet();
+
 	}
 
 	@PostConstruct
@@ -98,7 +100,7 @@ public class CategoryRepository implements ICategoryRepository {
 		try {
 			Map<String, Object> doc = Collections.unmodifiableMap(new HashMap<String, Object>() {
 				{
-					put(CATEGORY, desc.getDefinition());
+					put(CATEGORY, desc.getCategory());
 				}
 			});
 			return doc;

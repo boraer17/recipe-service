@@ -4,6 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Set;
+
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -65,15 +69,19 @@ public class CategoryRepositoryTest {
 	@Test
 	@Order(3)
 	public void testFindByIdSucess() {
-		Category cat = categoryRepository.findById("Pizza");
-		assertNotNull(cat);
+		ArrayList<String> cats = new ArrayList<String>();
+		cats.add("Pizza");
+		cats.add("Turkish");
+		Set<Category> catResult =  categoryRepository.findByIds(cats.toArray(new String[cats.size()]));
+		assertEquals(2,catResult.size());
 	}
-	
 	
 	@Test
 	@Order(4)
 	public void testFindByIdFail() {
-		assertThrows(DocumentNotFoundException.class, ()->categoryRepository.findById("XXX"));
+		Set<Category> cats =  categoryRepository.findByIds("XXX");
+		assertEquals(0,cats.size());
+	
 	}
 	
 }

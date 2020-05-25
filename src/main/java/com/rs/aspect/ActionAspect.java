@@ -3,20 +3,13 @@ package com.rs.aspect;
 import static java.lang.System.currentTimeMillis;
 
 import java.lang.reflect.Method;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-
-import com.rs.service.ICategoryService;
 
 import lombok.extern.slf4j.Slf4j;
 

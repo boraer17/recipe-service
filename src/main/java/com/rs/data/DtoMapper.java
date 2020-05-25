@@ -27,9 +27,7 @@ public class DtoMapper {
 	Function<com.rs.model.xml.Head, com.rs.model.dto.Head> headMapper = xmlHead -> {
 
 		final com.rs.model.dto.Head head = new com.rs.model.dto.Head(xmlHead.getTitle(), xmlHead.getYield(),
-				xmlHead.getCategories().stream().map(catMapper).map(cat -> {
-					return cat.getDefinition();
-				}).collect(Collectors.joining(",")));
+				xmlHead.getCategories().stream().map(catMapper).collect(Collectors.toSet()));
 		return head;
 	};
 

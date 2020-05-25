@@ -1,5 +1,7 @@
 package com.rs.service.impl;
 
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,6 +30,11 @@ public class CategoryService implements ICategoryService {
 	@Override
 	public Page<Category> findAll(Pageable page) {
 		return categoryRepository.findAll(page);
+	}
+
+	@Override
+	public Set<Category> findByIds(String... categories) {
+		return categoryRepository.findByIds(categories);
 	}
 
 }

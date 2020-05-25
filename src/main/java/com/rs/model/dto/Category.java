@@ -18,6 +18,6 @@ public class Category {
 	@NotBlank
 	@NotNull
 	@NotEmpty
-	private String definition;
+	private String category;
 	
 }

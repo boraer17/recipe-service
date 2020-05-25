@@ -1,7 +1,10 @@
 package com.rs.data.repository;
 
+import java.util.Set;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
 
 import com.rs.model.dto.Category;
 
@@ -13,5 +16,6 @@ public interface ICategoryRepository {
 
 	Page<Category> findAll(Pageable page);
     
-	Category findById(String description);
+	 Set<Category> findByIds(String... category);
+	
 }
