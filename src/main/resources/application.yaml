@@ -1,9 +1,9 @@
 
 app:
   listener:
-    directory: C:\Users\ersel.bora\Downloads\interview-assessment-mendix-developer\Recipes\Upload
+    directory: /data/upload
   redis:
-    host: localhost
+    host: redisearch
     port: 6379
     recipeIndex: recipe
     categoryIndex: category

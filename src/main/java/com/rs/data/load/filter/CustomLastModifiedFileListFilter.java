@@ -51,7 +51,8 @@ public class CustomLastModifiedFileListFilter extends LastModifiedFileListFilter
 		BasicFileAttributes attrs;
 		try {
 			attrs = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
-			FileTime time = attrs.creationTime();
+			FileTime time = attrs.lastAccessTime();
+			
 			Long createTime = time.toMillis();
 			return getAge() < now - (createTime / 1000);
 		} catch (IOException e) {

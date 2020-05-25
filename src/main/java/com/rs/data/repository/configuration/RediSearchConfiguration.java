@@ -1,5 +1,7 @@
 package com.rs.data.repository.configuration;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -27,7 +29,6 @@ public class RediSearchConfiguration {
 	@Bean
 	@Qualifier(value = "recipeClient")
 	public Client redisRecipeClient() {
-
 		return new Client(recipeIndex, host, port);
 	}
 

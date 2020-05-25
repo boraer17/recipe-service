@@ -1,0 +1,31 @@
+version: '3.3'
+services:
+  redisearch:
+    image: redislabs/redisearch:latest
+    restart: always
+    networks:
+      - app_default_net
+    container_name: redisearch
+    expose:
+      - "6379"
+    ports:
+      - "6379:6379"
+
+  recipe-service:
+    image: recipe-service:0.0.1-SNAPSHOT
+    container_name: recipe-service
+    restart: always
+    networks:
+      - app_default_net
+    depends_on:
+      - redisearch
+    expose:
+      - "8080"
+    ports:
+      -  "8080:8080"
+    volumes:
+      - //c/data/upload:/data/upload
+networks:
+    app_default_net:
+
+   
